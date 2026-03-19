@@ -42,7 +42,7 @@ const Header = () => {
     <header className={styles.header}>
       <div className={` ${styles.container}`}>
         <Link to="/" className={styles.logo} onClick={closeMenu}>
-          <img src="/public/icons/logotype.svg" alt="logotype" />
+          <img src="../../public/icons/logotype.svg" alt="logotype" />
         </Link>
 
         {isMobile ? (
