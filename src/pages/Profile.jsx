@@ -4,13 +4,13 @@ import { useAuth } from '../contexts/AuthContext'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend 
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer 
 } from 'recharts'
 import { 
   FaEye, FaEyeSlash, FaEdit, FaSave, FaTimes, 
   FaChartLine, FaRuler, FaHeart, FaUser, FaKey,
-  FaClock, FaTag, FaTrash,
-  FaDumbbell
+  FaClock, FaTag, FaTrash, FaDumbbell
 } from 'react-icons/fa'
 import styles from './Profile.module.css'
 
@@ -63,7 +63,7 @@ const Profile = () => {
       setProfileData(response.data)
       setFormData(response.data)
     } catch (error) {
-      console.error('Error fetching profile:', error)
+      console.error('Ошибка загрузки профиля:', error)
       toast.error('Ошибка загрузки профиля')
     } finally {
       setLoading(prev => ({ ...prev, profile: false }))
@@ -76,7 +76,7 @@ const Profile = () => {
       const response = await axios.get('/api/users/progress')
       setProgress(response.data)
     } catch (error) {
-      console.error('Error fetching progress:', error)
+      console.error('Ошибка загрузки прогресса:', error)
       toast.error('Ошибка загрузки прогресса')
     } finally {
       setLoading(prev => ({ ...prev, progress: false }))
@@ -89,7 +89,7 @@ const Profile = () => {
       const response = await axios.get('/api/users/measurements')
       setMeasurements(response.data || [])
     } catch (error) {
-      console.error('Error fetching measurements:', error)
+      console.error('Ошибка загрузки замеров:', error)
       toast.error('Ошибка загрузки замеров')
     } finally {
       setLoading(prev => ({ ...prev, measurements: false }))
@@ -102,7 +102,7 @@ const Profile = () => {
       const response = await axios.get('/api/users/favorites')
       setFavorites(response.data || [])
     } catch (error) {
-      console.error('Error fetching favorites:', error)
+      console.error('Ошибка загрузки избранного:', error)
       toast.error('Ошибка загрузки избранного')
     } finally {
       setLoading(prev => ({ ...prev, favorites: false }))
@@ -241,8 +241,8 @@ const Profile = () => {
       setEditing(false)
       fetchProfileData()
     } catch (error) {
-      console.error('Error updating profile:', error)
-      console.error('Error response:', error.response?.data)
+      console.error('Ошибка обновления профиля:', error)
+      console.error('Ответ с ошибкой:', error.response?.data)
       
       if (error.response?.data?.errors) {
         const serverErrors = {}
@@ -286,7 +286,7 @@ const Profile = () => {
         confirmPassword: ''
       })
     } catch (error) {
-      console.error('Error changing password:', error)
+      console.error('Ошибка изменения пароля:', error)
       if (error.response?.status === 401) {
         setPasswordErrors({ currentPassword: 'Неверный текущий пароль' })
       } else {
@@ -309,7 +309,7 @@ const Profile = () => {
       toast.success('Замеры сохранены')
       fetchMeasurements()
     } catch (error) {
-      console.error('Error adding measurement:', error)
+      console.error('Ошибка сохранения замеров:', error)
       toast.error('Ошибка сохранения замеров')
     }
   }
@@ -322,7 +322,7 @@ const Profile = () => {
       setFavorites(favorites.filter(w => w.id !== workoutId))
       toast.success('Тренировка удалена из избранного')
     } catch (error) {
-      console.error('Error removing favorite:', error)
+      console.error('Ошибка удаления из избранного:', error)
       toast.error('Ошибка при удалении из избранного')
     }
   }
@@ -338,18 +338,27 @@ const Profile = () => {
     }))
   }
 
-  const chartData = measurements.map(m => ({
-    date: new Date(m.date).toLocaleDateString(),
+  // Сортировка данных для графиков от прошлого к настоящему (слева направо)
+  const sortedMeasurements = [...measurements].sort((a, b) => 
+    new Date(a.date) - new Date(b.date)
+  )
+
+  const chartData = sortedMeasurements.map(m => ({
+    date: new Date(m.date).toLocaleDateString('ru-RU'),
     weight: m.weight,
     chest: m.chest,
     waist: m.waist,
     hips: m.hips
   }))
 
-  const workoutChartData = progress?.workouts?.map(w => ({
-    date: new Date(w.date).toLocaleDateString(),
-    duration: w.duration,
-    calories: w.caloriesBurned
+  const sortedWorkouts = progress?.workouts 
+    ? [...progress.workouts].sort((a, b) => new Date(a.date) - new Date(b.date))
+    : []
+
+  const workoutChartData = sortedWorkouts.map(w => ({
+    date: new Date(w.date).toLocaleDateString('ru-RU'),
+    Длительность: w.duration,
+    Калории: w.caloriesBurned
   })) || []
 
   const handleInputChange = (field, value) => {
@@ -360,6 +369,15 @@ const Profile = () => {
         delete newErrors[field]
         return newErrors
       })
+    }
+  }
+
+  const getDifficultyLabel = (level) => {
+    switch(level) {
+      case 'beginner': return 'Новичок'
+      case 'intermediate': return 'Средний'
+      case 'advanced': return 'Продвинутый'
+      default: return level
     }
   }
 
@@ -401,14 +419,13 @@ const Profile = () => {
           ) : (
             <div className={styles.profileContainer}>
               <div className={styles.profileCard}>
-                <h2 className={styles.sectionTitle}> Основная информация
-                </h2>
+                <h2 className={styles.sectionTitle}>Основная информация</h2>
                 
                 {editing ? (
                   <form onSubmit={handleUpdateProfile} className={styles.form}>
                     <div className={styles.formRow}>
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Имя</label>
+                        <label className={styles.formLabel}>Имя *</label>
                         <input
                           type="text"
                           value={formData.firstName || ''}
@@ -421,7 +438,7 @@ const Profile = () => {
                       </div>
                       
                       <div className={styles.formGroup}>
-                        <label className={styles.formLabel}>Фамилия</label>
+                        <label className={styles.formLabel}>Фамилия *</label>
                         <input
                           type="text"
                           value={formData.lastName || ''}
@@ -580,7 +597,7 @@ const Profile = () => {
                         className={styles.saveButton}
                         disabled={loading.profile}
                       >
-                       {loading.profile ? 'Сохранение...' : 'Сохранить изменения'}
+                        <FaSave size={14} /> {loading.profile ? 'Сохранение...' : 'Сохранить изменения'}
                       </button>
                       <button 
                         type="button" 
@@ -590,7 +607,8 @@ const Profile = () => {
                           setFormData(profileData)
                         }} 
                         className={styles.cancelButton}
-                      > Отмена
+                      >
+                        <FaTimes size={14} /> Отмена
                       </button>
                     </div>
                   </form>
@@ -608,7 +626,7 @@ const Profile = () => {
                       <div className={styles.infoItem}>
                         <span className={styles.infoLabel}>Дата рождения:</span>
                         <span className={styles.infoValue}>
-                          {profileData?.birthDate ? new Date(profileData.birthDate).toLocaleDateString() : 'Не указана'}
+                          {profileData?.birthDate ? new Date(profileData.birthDate).toLocaleDateString('ru-RU') : 'Не указана'}
                         </span>
                       </div>
                       <div className={styles.infoItem}>
@@ -621,8 +639,7 @@ const Profile = () => {
                       <div className={styles.infoItem}>
                         <span className={styles.infoLabel}>Уровень подготовки:</span>
                         <span className={styles.infoValue}>
-                          {profileData?.fitnessLevel === 'beginner' ? 'Новичок' : 
-                           profileData?.fitnessLevel === 'intermediate' ? 'Средний' : 'Продвинутый'}
+                          {getDifficultyLabel(profileData?.fitnessLevel)}
                         </span>
                       </div>
                     </div>
@@ -662,7 +679,8 @@ const Profile = () => {
                     <button 
                       onClick={() => setEditing(true)} 
                       className={styles.editButton}
-                    >Редактировать профиль
+                    >
+                      <FaEdit size={14} /> Редактировать профиль
                     </button>
                   </div>
                 )}
@@ -670,16 +688,22 @@ const Profile = () => {
               
               <div className={styles.profileCard}>
                 <h2 className={styles.sectionTitle}>
-                  Безопасность
+                  <FaKey size={18} /> Безопасность
                 </h2>
                 
                 {!changingPassword ? (
-                 
+                  <div className={styles.passwordInfo}>
+                    <div className={styles.infoItem}>
+                      <span className={styles.infoLabel}>Пароль:</span>
+                      <span className={styles.passwordValue}>••••••••</span>
+                    </div>
                     <button 
                       onClick={() => setChangingPassword(true)} 
                       className={styles.changePasswordButton}
-                    > Изменить пароль
+                    >
+                      <FaKey size={14} /> Изменить пароль
                     </button>
+                  </div>
                 ) : (
                   <form onSubmit={handleChangePassword} className={styles.passwordForm}>
                     <div className={styles.formGroup}>
@@ -813,14 +837,18 @@ const Profile = () => {
                 <div className={styles.chartContainer}>
                   <h3 className={styles.chartTitle}>График тренировок</h3>
                   <div className={styles.chartWrapper}>
-                    <LineChart width={600} height={300} data={workoutChartData}>
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="duration" stroke="var(--accent-color)" />
-                    </LineChart>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={workoutChartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <XAxis dataKey="date" label={{ value: 'Дата', position: 'insideBottom', offset: -5 }} />
+                        <YAxis yAxisId="left" label={{ value: 'Длительность (мин)', angle: -90, position: 'insideLeft' }} />
+                        <YAxis yAxisId="right" orientation="right" label={{ value: 'Калории', angle: 90, position: 'insideRight' }} />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <Tooltip formatter={(value) => [value, '']} />
+                        <Legend />
+                        <Line yAxisId="left" type="monotone" dataKey="Длительность" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        <Line yAxisId="right" type="monotone" dataKey="Калории" stroke="#82ca9d" />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </div>
                 </div>
               )}
@@ -843,17 +871,19 @@ const Profile = () => {
                 <div className={styles.chartContainer}>
                   <h3 className={styles.chartTitle}>Динамика замеров</h3>
                   <div className={styles.chartWrapper}>
-                    <LineChart width={600} height={300} data={chartData}>
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="weight" stroke="#8884d8" />
-                      <Line type="monotone" dataKey="chest" stroke="#82ca9d" />
-                      <Line type="monotone" dataKey="waist" stroke="#ffc658" />
-                      <Line type="monotone" dataKey="hips" stroke="#ff7300" />
-                    </LineChart>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <XAxis dataKey="date" label={{ value: 'Дата', position: 'insideBottom', offset: -5 }} />
+                        <YAxis label={{ value: 'Значение (см/кг)', angle: -90, position: 'insideCenter' }} />
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <Tooltip formatter={(value) => [value, '']} />
+                        <Legend />
+                        <Line type="monotone" dataKey="weight" name="Вес" stroke="#8884d8" />
+                        <Line type="monotone" dataKey="chest" name="Грудь" stroke="#82ca9d" />
+                        <Line type="monotone" dataKey="waist" name="Талия" stroke="#ffc658" />
+                        <Line type="monotone" dataKey="hips" name="Бедра" stroke="#ff7300" />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </div>
                 </div>
               )}
@@ -900,8 +930,7 @@ const Profile = () => {
                       <FaTrash size={16} />
                     </button>
                     <div className={`${styles.levelBadge} ${styles[workout.level]}`}>
-                      {workout.level === 'beginner' ? 'Новичок' : 
-                       workout.level === 'intermediate' ? 'Средний' : 'Продвинутый'}
+                      {getDifficultyLabel(workout.level)}
                     </div>
                   </div>
                   <div className={styles.favoriteContent}>

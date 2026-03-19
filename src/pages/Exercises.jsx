@@ -61,20 +61,7 @@ const Exercises = () => {
       <h1 className={styles.title}>Упражнения</h1>
       
       <div className={styles.filters}>
-        <select
-          value={filters.muscleGroup}
-          onChange={(e) => setFilters({...filters, muscleGroup: e.target.value})}
-          className={styles.filterSelect}
-        >
-          <option value="">Все группы мышц</option>
-          <option value="chest">Грудь</option>
-          <option value="back">Спина</option>
-          <option value="legs">Ноги</option>
-          <option value="shoulders">Плечи</option>
-          <option value="arms">Руки</option>
-          <option value="abs">Пресс</option>
-        </select>
-        
+              
         <select
           value={filters.difficulty}
           onChange={(e) => setFilters({...filters, difficulty: e.target.value})}
@@ -153,9 +140,7 @@ const Exercises = () => {
               )}
               
               <div className={styles.exerciseMeta}>
-                <span className={styles.metaItem}>
-                 {exercise.muscleGroup || 'Все мышцы'}
-                </span>
+               
                 
                 {exercise.category && (
                   <span className={styles.metaItem}>
