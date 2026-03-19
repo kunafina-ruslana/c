@@ -7,7 +7,7 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: process.env.REACT_APP_API_URL,
+        target: 'https://s-production-2907.up.railway.app',
         changeOrigin: true,
         secure: false
       }

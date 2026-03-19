@@ -135,7 +135,8 @@
 }
 
 .reviews {
-  padding: 50px 0;
+  padding-top: 25px;
+    padding-bottom: 75px;
   overflow: hidden;
 }
 
@@ -425,7 +426,8 @@
   }
 
   .reviews {
-    padding: 50px 0;
+    padding-top: 25px;
+    padding-bottom: 75px;
   }
 
   .title {
