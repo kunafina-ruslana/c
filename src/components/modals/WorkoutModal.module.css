@@ -37,13 +37,13 @@
   font-size: 22px;
   font-weight: bold;
   margin: 0;
-  color: var(--text-primary);
+  color: var(--text);
 }
 
 .closeButton {
   background: none;
   border: none;
-  color: var(--text-primary);
+  color: var(--text);
   cursor: pointer;
   padding: 8px;
   border-radius: 50%;
@@ -84,7 +84,7 @@
 .exerciseCount {
   font-size: 14px;
   font-weight: normal;
-  color: var(--text-primary);
+  color: var(--text);
   opacity: 0.7;
   margin-left: 5px;
 }
@@ -106,7 +106,7 @@
 .label {
   font-size: 14px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--text);
 }
 
 .charCount {
@@ -120,7 +120,7 @@
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-primary);
+  color: var(--text);
   opacity: 0.7;
 }
 
@@ -131,7 +131,7 @@
   border-radius: 6px;
   border: 1px solid var(--border);
   background-color: var(--bg);
-  color: var(--text-primary);
+  color: var(--text);
   font-size: 14px;
   transition: border-color 0.3s;
 }
@@ -188,7 +188,7 @@
 
 .hint {
   font-size: 11px;
-  color: var(--text-primary);
+  color: var(--text);
   opacity: 0.7;
   margin-top: 3px;
 }
@@ -236,7 +236,7 @@
   border-radius: 6px;
   border: 1px solid var(--border);
   background-color: var(--bg);
-  color: var(--text-primary);
+  color: var(--text);
   font-size: 14px;
   width: 100%;
 }
@@ -255,7 +255,7 @@
 
 .paramLabel {
   font-size: 11px;
-  color: var(--text-primary);
+  color: var(--text);
   opacity: 0.7;
 }
 
@@ -264,7 +264,7 @@
   border-radius: 4px;
   border: 1px solid var(--border);
   background-color: var(--bg);
-  color: var(--text-primary);
+  color: var(--text);
   font-size: 13px;
   width: 100%;
 }
@@ -324,7 +324,7 @@
   flex: 1;
   font-size: 15px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--text);
 }
 
 .removeButton {
@@ -355,7 +355,7 @@
 
 .detailItem label {
   font-size: 11px;
-  color: var(--text-primary);
+  color: var(--text);
   opacity: 0.7;
 }
 
@@ -364,7 +364,7 @@
   border-radius: 4px;
   border: 1px solid var(--border);
   background-color: var(--bg);
-  color: var(--text-primary);
+  color: var(--text);
   font-size: 12px;
   width: 100%;
 }
@@ -377,13 +377,13 @@
 
 .emptyText {
   font-size: 16px;
-  color: var(--text-primary);
+  color: var(--text);
   margin-bottom: 5px;
 }
 
 .emptySubtext {
   font-size: 13px;
-  color: var(--text-primary);
+  color: var(--text);
   opacity: 0.6;
 }
 
@@ -404,7 +404,7 @@
 
 .footerHint {
   font-size: 12px;
-  color: var(--text-primary);
+  color: var(--text);
   opacity: 0.7;
 }
 
@@ -418,7 +418,7 @@
   background-color: transparent;
   border: 1px solid var(--border);
   border-radius: 6px;
-  color: var(--text-primary);
+  color: var(--text);
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s;

@@ -3,16 +3,17 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { 
   FaUsers, FaDumbbell, FaCalendarAlt, FaStar, FaBars, FaTimes,
-  FaEdit, FaTrash, FaCheck, FaEye, FaEyeSlash, FaKey
+  FaEdit, FaTrash, FaCheck, FaEye, FaEyeSlash, FaKey, FaPlus
 } from 'react-icons/fa'
 import styles from './AdminPanel.module.css'
 
-// Модальное окно для пользователя с возможностью смены пароля
-const UserModal = ({ isOpen, onClose, user, onSave }) => {
+// Модальное окно для пользователя с возможностью создания и редактирования
+const UserModal = ({ isOpen, onClose, user, onSave, isCreating = false }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
+    password: '',
     role: 'user',
     fitnessLevel: 'beginner',
     weight: '',
@@ -23,26 +24,17 @@ const UserModal = ({ isOpen, onClose, user, onSave }) => {
     goal: ''
   })
   
-  const [passwordData, setPasswordData] = useState({
-    newPassword: '',
-    confirmPassword: ''
-  })
-  
-  const [showPassword, setShowPassword] = useState({
-    new: false,
-    confirm: false
-  })
-  
-  const [changingPassword, setChangingPassword] = useState(false)
-  const [passwordErrors, setPasswordErrors] = useState({})
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    if (user) {
+    if (user && !isCreating) {
       setFormData({
         firstName: user.firstName || '',
         lastName: user.lastName || '',
         email: user.email || '',
+        password: '',
         role: user.role || 'user',
         fitnessLevel: user.fitnessLevel || 'beginner',
         weight: user.weight || '',
@@ -52,72 +44,118 @@ const UserModal = ({ isOpen, onClose, user, onSave }) => {
         hips: user.hips || '',
         goal: user.goal || ''
       })
+    } else if (isCreating) {
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        role: 'user',
+        fitnessLevel: 'beginner',
+        weight: '',
+        height: '',
+        chest: '',
+        waist: '',
+        hips: '',
+        goal: ''
+      })
     }
-  }, [user])
+    setErrors({})
+  }, [user, isCreating, isOpen])
 
-  const validatePassword = () => {
-    const errors = {}
+  const validateForm = () => {
+    const newErrors = {}
     
-    if (!passwordData.newPassword) {
-      errors.newPassword = 'Введите новый пароль'
-    } else if (passwordData.newPassword.length < 8) {
-      errors.newPassword = 'Минимум 8 символов'
-    } else if (!/[A-Za-z]/.test(passwordData.newPassword) || !/[0-9]/.test(passwordData.newPassword)) {
-      errors.newPassword = 'Должен содержать буквы и цифры'
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'Имя обязательно'
     }
     
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      errors.confirmPassword = 'Пароли не совпадают'
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Фамилия обязательна'
     }
     
-    setPasswordErrors(errors)
-    return Object.keys(errors).length === 0
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email обязателен'
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Неверный формат email'
+    }
+    
+    if (isCreating && !formData.password) {
+      newErrors.password = 'Пароль обязателен'
+    } else if (formData.password && formData.password.length < 8) {
+      newErrors.password = 'Минимум 8 символов'
+    } else if (formData.password && (!/[A-Za-z]/.test(formData.password) || !/[0-9]/.test(formData.password))) {
+      newErrors.password = 'Должен содержать буквы и цифры'
+    }
+    
+    if (formData.weight && (formData.weight < 20 || formData.weight > 300)) {
+      newErrors.weight = 'Вес должен быть от 20 до 300 кг'
+    }
+    
+    if (formData.height && (formData.height < 100 || formData.height > 250)) {
+      newErrors.height = 'Рост должен быть от 100 до 250 см'
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
     
-    try {
-      const response = await axios.put(`/api/admin/users/${user.id}`, formData)
-      toast.success('Пользователь обновлен')
-      onSave(response.data)
-      onClose()
-    } catch (error) {
-      console.error('Update error:', error)
-      toast.error(error.response?.data?.message || 'Ошибка при обновлении')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleChangePassword = async () => {
-    if (!validatePassword()) {
+    if (!validateForm()) {
+      toast.error('Пожалуйста, исправьте ошибки в форме')
       return
     }
     
     setLoading(true)
     
     try {
-      await axios.put(`/api/admin/users/${user.id}/password`, {
-        password: passwordData.newPassword
-      })
-      toast.success('Пароль пользователя изменен')
-      setChangingPassword(false)
-      setPasswordData({ newPassword: '', confirmPassword: '' })
+      let response;
+      const submitData = {
+        ...formData,
+        weight: formData.weight ? parseFloat(formData.weight) : null,
+        height: formData.height ? parseFloat(formData.height) : null,
+        chest: formData.chest ? parseFloat(formData.chest) : null,
+        waist: formData.waist ? parseFloat(formData.waist) : null,
+        hips: formData.hips ? parseFloat(formData.hips) : null
+      };
+      
+      if (isCreating) {
+        response = await axios.post('/api/admin/users', submitData);
+        toast.success('Пользователь успешно создан');
+      } else {
+        response = await axios.put(`/api/admin/users/${user.id}`, submitData);
+        toast.success('Пользователь обновлен');
+      }
+      
+      onSave(response.data);
+      onClose();
     } catch (error) {
-      console.error('Password change error:', error)
-      toast.error(error.response?.data?.message || 'Ошибка при изменении пароля')
+      console.error('Save error:', error);
+      toast.error(error.response?.data?.message || 'Ошибка при сохранении');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  const togglePasswordVisibility = (field) => {
-    setShowPassword(prev => ({
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({
       ...prev,
-      [field]: !prev[field]
+      [name]: value
     }))
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[name]
+        return newErrors
+      })
+    }
   }
 
   if (!isOpen) return null
@@ -127,267 +165,216 @@ const UserModal = ({ isOpen, onClose, user, onSave }) => {
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
           <h3 className={styles.modalTitle}>
-            {changingPassword ? 'Смена пароля' : 'Редактирование пользователя'}
+            {isCreating ? 'Создание пользователя' : 'Редактирование пользователя'}
           </h3>
           <button onClick={onClose} className={styles.modalCloseButton} disabled={loading}>
             <FaTimes size={20} />
           </button>
         </div>
         
-        <div className={styles.modalTabs}>
-          <button 
-            className={`${styles.modalTab} ${!changingPassword ? styles.activeModalTab : ''}`}
-            onClick={() => setChangingPassword(false)}
-            disabled={loading}
-          >
-            Основные данные
-          </button>
-          <button 
-            className={`${styles.modalTab} ${changingPassword ? styles.activeModalTab : ''}`}
-            onClick={() => setChangingPassword(true)}
-            disabled={loading}
-          >Смена пароля
-          </button>
-        </div>
-
-        {!changingPassword ? (
-          <form onSubmit={handleSubmit} className={styles.modalForm}>
-            <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Имя</label>
-                <input
-                  type="text"
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                  className={styles.formInput}
-                  required
-                  disabled={loading}
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Фамилия</label>
-                <input
-                  type="text"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                  className={styles.formInput}
-                  required
-                  disabled={loading}
-                />
-              </div>
-            </div>
-
+        <form onSubmit={handleSubmit} className={styles.modalForm}>
+          <div className={styles.formRow}>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Email</label>
+              <label className={styles.formLabel}>Имя *</label>
               <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
-                className={styles.formInput}
-                required
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                className={`${styles.formInput} ${errors.firstName ? styles.inputError : ''}`}
                 disabled={loading}
               />
+              {errors.firstName && <span className={styles.errorMessage}>{errors.firstName}</span>}
             </div>
-
-            <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Роль</label>
-                <select
-                  value={formData.role}
-                  onChange={(e) => setFormData({...formData, role: e.target.value})}
-                  className={styles.formSelect}
-                  disabled={loading}
-                >
-                  <option value="user">Пользователь</option>
-                  <option value="trainer">Тренер</option>
-                  <option value="admin">Администратор</option>
-                </select>
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Уровень</label>
-                <select
-                  value={formData.fitnessLevel}
-                  onChange={(e) => setFormData({...formData, fitnessLevel: e.target.value})}
-                  className={styles.formSelect}
-                  disabled={loading}
-                >
-                  <option value="beginner">Новичок</option>
-                  <option value="intermediate">Средний</option>
-                  <option value="advanced">Продвинутый</option>
-                </select>
-              </div>
-            </div>
-
-            <h4 className={styles.formSubtitle}>Антропометрические данные</h4>
-            
-            <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Вес (кг)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={formData.weight}
-                  onChange={(e) => setFormData({...formData, weight: e.target.value})}
-                  className={styles.formInput}
-                  disabled={loading}
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Рост (см)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={formData.height}
-                  onChange={(e) => setFormData({...formData, height: e.target.value})}
-                  className={styles.formInput}
-                  disabled={loading}
-                />
-              </div>
-            </div>
-
-            <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Грудь (см)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={formData.chest}
-                  onChange={(e) => setFormData({...formData, chest: e.target.value})}
-                  className={styles.formInput}
-                  disabled={loading}
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Талия (см)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={formData.waist}
-                  onChange={(e) => setFormData({...formData, waist: e.target.value})}
-                  className={styles.formInput}
-                  disabled={loading}
-                />
-              </div>
-            </div>
-
-            <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Бедра (см)</label>
-                <input
-                  type="number"
-                  step="0.1"
-                  value={formData.hips}
-                  onChange={(e) => setFormData({...formData, hips: e.target.value})}
-                  className={styles.formInput}
-                  disabled={loading}
-                />
-              </div>
-            </div>
-
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Цель</label>
-              <textarea
-                value={formData.goal}
-                onChange={(e) => setFormData({...formData, goal: e.target.value})}
-                className={styles.formTextarea}
-                rows="3"
+              <label className={styles.formLabel}>Фамилия *</label>
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                className={`${styles.formInput} ${errors.lastName ? styles.inputError : ''}`}
                 disabled={loading}
               />
-            </div>
-
-            <div className={styles.formActions}>
-              <button type="button" onClick={onClose} className={styles.cancelButton} disabled={loading}>
-                Отмена
-              </button>
-              <button type="submit" className={styles.saveButton} disabled={loading}>
-                {loading ? 'Сохранение...' : 'Сохранить'}
-              </button>
-            </div>
-          </form>
-        ) : (
-          <div className={styles.modalForm}>
-            <h4 className={styles.formSubtitle}>Смена пароля пользователя</h4>
-            <p className={styles.userInfo}>Пользователь: {user?.firstName} {user?.lastName} ({user?.email})</p>
-            
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Новый пароль</label>
-              <div className={styles.passwordInput}>
-                <input
-                  type={showPassword.new ? 'text' : 'password'}
-                  value={passwordData.newPassword}
-                  onChange={(e) => setPasswordData({...passwordData, newPassword: e.target.value})}
-                  className={`${styles.formInput} ${passwordErrors.newPassword ? styles.inputError : ''}`}
-                  placeholder="Введите новый пароль"
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  onClick={() => togglePasswordVisibility('new')}
-                  className={styles.eyeButton}
-                >
-                  {showPassword.new ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-              {passwordErrors.newPassword && (
-                <span className={styles.errorMessage}>{passwordErrors.newPassword}</span>
-              )}
-              <small className={styles.hint}>Минимум 8 символов, буквы и цифры</small>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Подтверждение пароля</label>
-              <div className={styles.passwordInput}>
-                <input
-                  type={showPassword.confirm ? 'text' : 'password'}
-                  value={passwordData.confirmPassword}
-                  onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})}
-                  className={`${styles.formInput} ${passwordErrors.confirmPassword ? styles.inputError : ''}`}
-                  placeholder="Подтвердите новый пароль"
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  onClick={() => togglePasswordVisibility('confirm')}
-                  className={styles.eyeButton}
-                >
-                  {showPassword.confirm ? <FaEyeSlash /> : <FaEye />}
-                </button>
-              </div>
-              {passwordErrors.confirmPassword && (
-                <span className={styles.errorMessage}>{passwordErrors.confirmPassword}</span>
-              )}
-            </div>
-
-            <div className={styles.formActions}>
-              <button 
-                type="button" 
-                onClick={() => {
-                  setChangingPassword(false)
-                  setPasswordData({ newPassword: '', confirmPassword: '' })
-                  setPasswordErrors({})
-                }} 
-                className={styles.cancelButton}
-                disabled={loading}
-              >
-                Отмена
-              </button>
-              <button 
-                type="button" 
-                onClick={handleChangePassword}
-                className={styles.saveButton}
-                disabled={loading}
-              >
-                {loading ? 'Сохранение...' : 'Изменить пароль'}
-              </button>
+              {errors.lastName && <span className={styles.errorMessage}>{errors.lastName}</span>}
             </div>
           </div>
-        )}
+
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Email *</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className={`${styles.formInput} ${errors.email ? styles.inputError : ''}`}
+              disabled={loading}
+            />
+            {errors.email && <span className={styles.errorMessage}>{errors.email}</span>}
+          </div>
+
+          {isCreating && (
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Пароль *</label>
+              <div className={styles.passwordInput}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className={`${styles.formInput} ${errors.password ? styles.inputError : ''}`}
+                  placeholder="Введите пароль"
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className={styles.eyeButton}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
+              {errors.password && <span className={styles.errorMessage}>{errors.password}</span>}
+              <small className={styles.hint}>Минимум 8 символов, буквы и цифры</small>
+            </div>
+          )}
+
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Роль</label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className={styles.formSelect}
+                disabled={loading}
+              >
+                <option value="user">Пользователь</option>
+                <option value="trainer">Тренер</option>
+                <option value="admin">Администратор</option>
+              </select>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Уровень</label>
+              <select
+                name="fitnessLevel"
+                value={formData.fitnessLevel}
+                onChange={handleChange}
+                className={styles.formSelect}
+                disabled={loading}
+              >
+                <option value="beginner">Новичок</option>
+                <option value="intermediate">Средний</option>
+                <option value="advanced">Продвинутый</option>
+              </select>
+            </div>
+          </div>
+
+          <h4 className={styles.formSubtitle}>Антропометрические данные</h4>
+          
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Вес (кг)</label>
+              <input
+                type="number"
+                name="weight"
+                value={formData.weight}
+                onChange={handleChange}
+                className={`${styles.formInput} ${errors.weight ? styles.inputError : ''}`}
+                step="0.1"
+                min="20"
+                max="300"
+                disabled={loading}
+              />
+              {errors.weight && <span className={styles.errorMessage}>{errors.weight}</span>}
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Рост (см)</label>
+              <input
+                type="number"
+                name="height"
+                value={formData.height}
+                onChange={handleChange}
+                className={`${styles.formInput} ${errors.height ? styles.inputError : ''}`}
+                step="0.1"
+                min="100"
+                max="250"
+                disabled={loading}
+              />
+              {errors.height && <span className={styles.errorMessage}>{errors.height}</span>}
+            </div>
+          </div>
+
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Грудь (см)</label>
+              <input
+                type="number"
+                name="chest"
+                value={formData.chest}
+                onChange={handleChange}
+                className={styles.formInput}
+                step="0.1"
+                disabled={loading}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Талия (см)</label>
+              <input
+                type="number"
+                name="waist"
+                value={formData.waist}
+                onChange={handleChange}
+                className={styles.formInput}
+                step="0.1"
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className={styles.formRow}>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Бедра (см)</label>
+              <input
+                type="number"
+                name="hips"
+                value={formData.hips}
+                onChange={handleChange}
+                className={styles.formInput}
+                step="0.1"
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label className={styles.formLabel}>Цель</label>
+            <textarea
+              name="goal"
+              value={formData.goal}
+              onChange={handleChange}
+              className={styles.formTextarea}
+              rows="3"
+              disabled={loading}
+            />
+          </div>
+
+          <div className={styles.formActions}>
+            <button type="button" onClick={onClose} className={styles.cancelButton} disabled={loading}>
+              Отмена
+            </button>
+            <button type="submit" className={styles.saveButton} disabled={loading}>
+              <FaCheck size={14} /> {loading ? 'Сохранение...' : (isCreating ? 'Создать' : 'Сохранить')}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )
 }
 
-const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
+// Модальное окно для упражнения с возможностью создания и редактирования
+const ExerciseModal = ({ isOpen, onClose, exercise, onSave, isCreating = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -398,15 +385,16 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
     imageUrl: '',
     rutubeFullUrl: '',
     rutubeStartTime: 0,
-    rutubeEndTime: null, // Изменено с '' на null
+    rutubeEndTime: null,
     instructions: '',
     commonMistakes: ''
   })
   
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    if (exercise) {
+    if (exercise && !isCreating) {
       setFormData({
         name: exercise.name || '',
         description: exercise.description || '',
@@ -417,38 +405,99 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
         imageUrl: exercise.imageUrl || '',
         rutubeFullUrl: exercise.rutubeFullUrl || '',
         rutubeStartTime: exercise.rutubeStartTime || 0,
-        rutubeEndTime: exercise.rutubeEndTime || null, // Пустую строку преобразуем в null
+        rutubeEndTime: exercise.rutubeEndTime || null,
         instructions: exercise.instructions || '',
         commonMistakes: exercise.commonMistakes || ''
       })
+    } else if (isCreating) {
+      setFormData({
+        name: '',
+        description: '',
+        category: 'strength',
+        muscleGroup: '',
+        difficulty: 'beginner',
+        equipment: '',
+        imageUrl: '',
+        rutubeFullUrl: '',
+        rutubeStartTime: 0,
+        rutubeEndTime: null,
+        instructions: '',
+        commonMistakes: ''
+      })
     }
-  }, [exercise])
+    setErrors({})
+  }, [exercise, isCreating, isOpen])
+
+  const validateForm = () => {
+    const newErrors = {}
+    
+    if (!formData.name.trim()) {
+      newErrors.name = 'Название обязательно'
+    }
+    
+    if (!formData.description.trim()) {
+      newErrors.description = 'Описание обязательно'
+    }
+    
+    if (formData.rutubeFullUrl) {
+      const rutubePattern = /rutube\.ru\/(video|play)\/([a-f0-9]+)/i;
+      if (!rutubePattern.test(formData.rutubeFullUrl)) {
+        newErrors.rutubeFullUrl = 'Неверный формат ссылки Rutube';
+      }
+    }
+    
+    if (formData.rutubeEndTime && formData.rutubeStartTime >= formData.rutubeEndTime) {
+      newErrors.rutubeEndTime = 'Время окончания должно быть больше времени начала';
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    if (!validateForm()) {
+      toast.error('Пожалуйста, исправьте ошибки в форме')
+      return
+    }
+    
     setLoading(true)
     
     try {
       // Подготавливаем данные для отправки
       const submitData = {
-        ...formData,
-        // Преобразуем пустые строки в null для числовых полей
-        rutubeStartTime: formData.rutubeStartTime === '' ? 0 : Number(formData.rutubeStartTime),
-        rutubeEndTime: formData.rutubeEndTime === '' ? null : Number(formData.rutubeEndTime),
-        // Убеждаемся, что все числовые поля преобразованы правильно
-        ...(formData.rutubeEndTime === '' && { rutubeEndTime: null })
+        name: formData.name.trim(),
+        description: formData.description.trim(),
+        category: formData.category,
+        muscleGroup: formData.muscleGroup?.trim() || null,
+        difficulty: formData.difficulty,
+        equipment: formData.equipment?.trim() || null,
+        imageUrl: formData.imageUrl?.trim() || null,
+        rutubeFullUrl: formData.rutubeFullUrl?.trim() || null,
+        rutubeStartTime: formData.rutubeStartTime ? parseInt(formData.rutubeStartTime) : 0,
+        rutubeEndTime: formData.rutubeEndTime ? parseInt(formData.rutubeEndTime) : null,
+        instructions: formData.instructions?.trim() || null,
+        commonMistakes: formData.commonMistakes?.trim() || null
       }
       
       console.log('Sending exercise data:', submitData)
       
-      const response = await axios.put(`/api/exercises/${exercise.id}`, submitData)
-      toast.success('Упражнение обновлено')
+      let response;
+      if (isCreating) {
+        response = await axios.post('/api/exercises', submitData)
+        toast.success('Упражнение успешно создано')
+      } else {
+        response = await axios.put(`/api/exercises/${exercise.id}`, submitData)
+        toast.success('Упражнение обновлено')
+      }
+      
       onSave(response.data)
       onClose()
     } catch (error) {
-      console.error('Update error:', error)
+      console.error('Save error:', error)
       console.error('Error response:', error.response?.data)
-      toast.error(error.response?.data?.message || 'Ошибка при обновлении')
+      toast.error(error.response?.data?.message || 'Ошибка при сохранении')
     } finally {
       setLoading(false)
     }
@@ -460,6 +509,13 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
       ...prev,
       [name]: value
     }))
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[name]
+        return newErrors
+      })
+    }
   }
 
   const handleNumberChange = (e) => {
@@ -476,36 +532,38 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
-          <h3 className={styles.modalTitle}>Редактирование упражнения</h3>
+          <h3 className={styles.modalTitle}>
+            {isCreating ? 'Создание упражнения' : 'Редактирование упражнения'}
+          </h3>
           <button onClick={onClose} className={styles.modalCloseButton} disabled={loading}>
             <FaTimes size={20} />
           </button>
         </div>
         <form onSubmit={handleSubmit} className={styles.modalForm}>
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Название</label>
+            <label className={styles.formLabel}>Название *</label>
             <input
               type="text"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={styles.formInput}
-              required
+              className={`${styles.formInput} ${errors.name ? styles.inputError : ''}`}
               disabled={loading}
             />
+            {errors.name && <span className={styles.errorMessage}>{errors.name}</span>}
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Описание</label>
+            <label className={styles.formLabel}>Описание *</label>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className={styles.formTextarea}
+              className={`${styles.formTextarea} ${errors.description ? styles.inputError : ''}`}
               rows="3"
-              required
               disabled={loading}
             />
+            {errors.description && <span className={styles.errorMessage}>{errors.description}</span>}
           </div>
 
           <div className={styles.formRow}>
@@ -589,10 +647,11 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
               name="rutubeFullUrl"
               value={formData.rutubeFullUrl}
               onChange={handleChange}
-              className={styles.formInput}
+              className={`${styles.formInput} ${errors.rutubeFullUrl ? styles.inputError : ''}`}
               placeholder="https://rutube.ru/video/..."
               disabled={loading}
             />
+            {errors.rutubeFullUrl && <span className={styles.errorMessage}>{errors.rutubeFullUrl}</span>}
           </div>
 
           <div className={styles.formRow}>
@@ -620,6 +679,7 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
                 placeholder="Оставьте пустым до конца"
                 disabled={loading}
               />
+              {errors.rutubeEndTime && <span className={styles.errorMessage}>{errors.rutubeEndTime}</span>}
               <small className={styles.hint}>Оставьте пустым, если видео до конца</small>
             </div>
           </div>
@@ -653,7 +713,7 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
               Отмена
             </button>
             <button type="submit" className={styles.saveButton} disabled={loading}>
-              <FaCheck size={14} /> {loading ? 'Сохранение...' : 'Сохранить'}
+              <FaCheck size={14} /> {loading ? 'Сохранение...' : (isCreating ? 'Создать' : 'Сохранить')}
             </button>
           </div>
         </form>
@@ -662,7 +722,9 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave }) => {
   )
 }
 
-const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
+
+// Модальное окно для тренировки с возможностью создания и редактирования
+const WorkoutModal = ({ isOpen, onClose, workout, onSave, isCreating = false }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -676,7 +738,7 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
   const [errors, setErrors] = useState({})
 
   useEffect(() => {
-    if (workout) {
+    if (workout && !isCreating) {
       setFormData({
         name: workout.name || '',
         description: workout.description || '',
@@ -685,8 +747,18 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
         category: workout.category || '',
         imageUrl: workout.imageUrl || ''
       })
+    } else if (isCreating) {
+      setFormData({
+        name: '',
+        description: '',
+        duration: '',
+        level: 'beginner',
+        category: '',
+        imageUrl: ''
+      })
     }
-  }, [workout])
+    setErrors({})
+  }, [workout, isCreating, isOpen])
 
   const validateForm = () => {
     const newErrors = {}
@@ -722,39 +794,31 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
     setLoading(true)
     
     try {
-      // Подготавливаем данные для отправки
       const submitData = {
         name: formData.name.trim(),
         description: formData.description.trim(),
-        duration: Number(formData.duration), // Преобразуем в число
+        duration: Number(formData.duration),
         level: formData.level,
-        // Опциональные поля
         ...(formData.category && { category: formData.category.trim() }),
         ...(formData.imageUrl && { imageUrl: formData.imageUrl.trim() })
       }
       
-      console.log('Sending workout data:', submitData)
-      
-      const response = await axios.put(`/api/workouts/${workout.id}`, submitData)
-      toast.success('Тренировка успешно обновлена')
-      onSave(response.data)
-      onClose()
-    } catch (error) {
-      console.error('Update error:', error)
-      console.error('Error response:', error.response?.data)
-      
-      if (error.response?.data?.errors) {
-        // Если сервер вернул детальные ошибки
-        const serverErrors = {}
-        error.response.data.errors.forEach(err => {
-          serverErrors[err.path] = err.msg
-        })
-        setErrors(serverErrors)
+      let response;
+      if (isCreating) {
+        response = await axios.post('/api/workouts', submitData);
+        toast.success('Тренировка успешно создана');
+      } else {
+        response = await axios.put(`/api/workouts/${workout.id}`, submitData);
+        toast.success('Тренировка обновлена');
       }
       
-      toast.error(error.response?.data?.message || 'Ошибка при обновлении тренировки')
+      onSave(response.data);
+      onClose();
+    } catch (error) {
+      console.error('Save error:', error);
+      toast.error(error.response?.data?.message || 'Ошибка при сохранении');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -764,7 +828,6 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
       ...prev,
       [name]: value
     }))
-    // Очищаем ошибку для этого поля
     if (errors[name]) {
       setErrors(prev => {
         const newErrors = { ...prev }
@@ -780,7 +843,9 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
     <div className={styles.modalOverlay}>
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
-          <h3 className={styles.modalTitle}>Редактирование тренировки</h3>
+          <h3 className={styles.modalTitle}>
+            {isCreating ? 'Создание тренировки' : 'Редактирование тренировки'}
+          </h3>
           <button onClick={onClose} className={styles.modalCloseButton} disabled={loading}>
             <FaTimes size={20} />
           </button>
@@ -794,7 +859,6 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
               value={formData.name}
               onChange={handleChange}
               className={`${styles.formInput} ${errors.name ? styles.inputError : ''}`}
-              required
               disabled={loading}
             />
             {errors.name && <span className={styles.errorMessage}>{errors.name}</span>}
@@ -808,7 +872,6 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
               onChange={handleChange}
               className={`${styles.formTextarea} ${errors.description ? styles.inputError : ''}`}
               rows="3"
-              required
               disabled={loading}
             />
             {errors.description && <span className={styles.errorMessage}>{errors.description}</span>}
@@ -823,7 +886,6 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
                 value={formData.duration}
                 onChange={handleChange}
                 className={`${styles.formInput} ${errors.duration ? styles.inputError : ''}`}
-                required
                 min="1"
                 max="300"
                 step="1"
@@ -879,7 +941,7 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
               Отмена
             </button>
             <button type="submit" className={styles.saveButton} disabled={loading}>
-              <FaCheck size={14} /> {loading ? 'Сохранение...' : 'Сохранить'}
+              <FaCheck size={14} /> {loading ? 'Сохранение...' : (isCreating ? 'Создать' : 'Сохранить')}
             </button>
           </div>
         </form>
@@ -888,6 +950,7 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
   )
 }
 
+// Модальное окно для отзыва (только редактирование, без создания)
 const ReviewModal = ({ isOpen, onClose, review, onSave }) => {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -966,7 +1029,7 @@ const ReviewModal = ({ isOpen, onClose, review, onSave }) => {
               />
             </div>
             <div className={styles.formGroup}>
-              <label className={styles.formLabel}>Почта</label>
+              <label className={styles.formLabel}>Email</label>
               <input
                 type="email"
                 value={formData.email}
@@ -1018,10 +1081,10 @@ const AdminPanel = () => {
   const [stats, setStats] = useState({})
   
   const [modalState, setModalState] = useState({
-    user: { isOpen: false, item: null },
-    exercise: { isOpen: false, item: null },
-    workout: { isOpen: false, item: null },
-    review: { isOpen: false, item: null }
+    user: { isOpen: false, item: null, isCreating: false },
+    exercise: { isOpen: false, item: null, isCreating: false },
+    workout: { isOpen: false, item: null, isCreating: false },
+    review: { isOpen: false, item: null, isCreating: false }
   })
   
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -1132,13 +1195,25 @@ const AdminPanel = () => {
   const handleSave = (type, updatedItem) => {
     switch(type) {
       case 'users':
-        setUsers(users.map(u => u.id === updatedItem.id ? updatedItem : u));
+        if (modalState.user.isCreating) {
+          setUsers([updatedItem, ...users]);
+        } else {
+          setUsers(users.map(u => u.id === updatedItem.id ? updatedItem : u));
+        }
         break;
       case 'exercises':
-        setExercises(exercises.map(e => e.id === updatedItem.id ? updatedItem : e));
+        if (modalState.exercise.isCreating) {
+          setExercises([updatedItem, ...exercises]);
+        } else {
+          setExercises(exercises.map(e => e.id === updatedItem.id ? updatedItem : e));
+        }
         break;
       case 'workouts':
-        setWorkouts(workouts.map(w => w.id === updatedItem.id ? updatedItem : w));
+        if (modalState.workout.isCreating) {
+          setWorkouts([updatedItem, ...workouts]);
+        } else {
+          setWorkouts(workouts.map(w => w.id === updatedItem.id ? updatedItem : w));
+        }
         break;
       case 'reviews':
         setReviews(reviews.map(r => r.id === updatedItem.id ? updatedItem : r));
@@ -1146,17 +1221,17 @@ const AdminPanel = () => {
     }
   }
 
-  const openModal = (type, item = null) => {
+  const openModal = (type, item = null, isCreating = false) => {
     setModalState({
       ...modalState,
-      [type]: { isOpen: true, item }
+      [type]: { isOpen: true, item, isCreating }
     })
   }
 
   const closeModal = (type) => {
     setModalState({
       ...modalState,
-      [type]: { isOpen: false, item: null }
+      [type]: { isOpen: false, item: null, isCreating: false }
     })
   }
 
@@ -1188,7 +1263,9 @@ const AdminPanel = () => {
 
   return (
     <div className={`container ${styles.container}`}>
-      <h1 className={styles.title}>Панель администратора</h1>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Панель администратора</h1>
+      </div>
       
       <div className={styles.stats}>
         <div className={styles.statCard}>
@@ -1262,6 +1339,32 @@ const AdminPanel = () => {
           )}
         </div>
       )}
+      <div className={styles.headerButtons}>
+          {activeTab === 'users' && (
+            <button 
+              onClick={() => openModal('user', null, true)} 
+              className={styles.createButton}
+            >
+              <FaPlus size={14} /> Создать пользователя
+            </button>
+          )}
+          {activeTab === 'exercises' && (
+            <button 
+              onClick={() => openModal('exercise', null, true)} 
+              className={styles.createButton}
+            >
+              <FaPlus size={14} /> Создать упражнение
+            </button>
+          )}
+          {activeTab === 'workouts' && (
+            <button 
+              onClick={() => openModal('workout', null, true)} 
+              className={styles.createButton}
+            >
+              <FaPlus size={14} /> Создать тренировку
+            </button>
+          )}
+        </div>
       
       {!isMobile && (
         <div className={styles.tabs}>
@@ -1297,7 +1400,7 @@ const AdminPanel = () => {
           <div className={styles.tableContainer}>
             <div className={styles.tableHeader}>
               <h2 className={styles.sectionTitle}>
-               Пользователи
+                Пользователи
               </h2>
             </div>
             
@@ -1334,7 +1437,7 @@ const AdminPanel = () => {
                       <td>
                         <div className={styles.actionButtons}>
                           <button 
-                            onClick={() => openModal('user', user)}
+                            onClick={() => openModal('user', user, false)}
                             className={styles.editButton}
                             title="Редактировать"
                           >
@@ -1397,7 +1500,7 @@ const AdminPanel = () => {
                       <td>
                         <div className={styles.actionButtons}>
                           <button 
-                            onClick={() => openModal('exercise', exercise)}
+                            onClick={() => openModal('exercise', exercise, false)}
                             className={styles.editButton}
                             title="Редактировать"
                           >
@@ -1456,7 +1559,7 @@ const AdminPanel = () => {
                       <td>
                         <div className={styles.actionButtons}>
                           <button 
-                            onClick={() => openModal('workout', workout)}
+                            onClick={() => openModal('workout', workout, false)}
                             className={styles.editButton}
                             title="Редактировать"
                           >
@@ -1508,7 +1611,7 @@ const AdminPanel = () => {
                       <td>
                         <div className={styles.actionButtons}>
                           <button 
-                            onClick={() => openModal('review', review)}
+                            onClick={() => openModal('review', review, false)}
                             className={styles.editButton}
                             title="Редактировать"
                           >
@@ -1537,6 +1640,7 @@ const AdminPanel = () => {
         onClose={() => closeModal('user')}
         user={modalState.user.item}
         onSave={(updated) => handleSave('users', updated)}
+        isCreating={modalState.user.isCreating}
       />
 
       <ExerciseModal
@@ -1544,6 +1648,7 @@ const AdminPanel = () => {
         onClose={() => closeModal('exercise')}
         exercise={modalState.exercise.item}
         onSave={(updated) => handleSave('exercises', updated)}
+        isCreating={modalState.exercise.isCreating}
       />
 
       <WorkoutModal
@@ -1551,6 +1656,7 @@ const AdminPanel = () => {
         onClose={() => closeModal('workout')}
         workout={modalState.workout.item}
         onSave={(updated) => handleSave('workouts', updated)}
+        isCreating={modalState.workout.isCreating}
       />
 
       <ReviewModal

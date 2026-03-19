@@ -549,3 +549,16 @@
   cursor: not-allowed;
 }
 
+.createButton{
+      padding: 10px 20px;
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: opacity 0.3s;
+    width: fit-content;
+}

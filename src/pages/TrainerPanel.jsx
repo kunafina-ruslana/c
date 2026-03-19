@@ -23,17 +23,23 @@ const TrainerPanel = () => {
   const fetchAllData = async () => {
     try {
       setLoading(true);
+      console.log('Загрузка данных тренера...');
       
       const [exercisesRes, workoutsRes] = await Promise.all([
         api.get('/api/exercises/my'),
         api.get('/api/workouts/my')
       ]);
       
-      setExercises(exercisesRes.data);
-      setWorkouts(workoutsRes.data);
+      const exercisesData = Array.isArray(exercisesRes.data) ? exercisesRes.data : [];
+      const workoutsData = Array.isArray(workoutsRes.data) ? workoutsRes.data : [];
+      
+      setExercises(exercisesData);
+      setWorkouts(workoutsData);
     } catch (error) {
-      console.error('Error loading data:', error);
-      toast.error('Ошибка загрузки данных. Проверьте подключение к серверу.');
+      console.error('Ошибка загрузки данных:', error);
+      toast.error('Ошибка загрузки данных');
+      setExercises([]);
+      setWorkouts([]);
     } finally {
       setLoading(false);
     }
@@ -65,10 +71,22 @@ const TrainerPanel = () => {
     }
   };
 
-  const handleItemSaved = () => {
+  const handleItemSaved = (savedItem) => {
+    if (modalType === 'exercise') {
+      if (selectedItem) {
+        setExercises(prev => prev.map(ex => ex.id === savedItem.id ? savedItem : ex));
+      } else {
+        setExercises(prev => [savedItem, ...prev]);
+      }
+    } else {
+      if (selectedItem) {
+        setWorkouts(prev => prev.map(w => w.id === savedItem.id ? savedItem : w));
+      } else {
+        setWorkouts(prev => [savedItem, ...prev]);
+      }
+    }
     setModalOpen(false);
     setSelectedItem(null);
-    fetchAllData();
   };
 
   const openExerciseModal = (exercise = null) => {
@@ -83,37 +101,36 @@ const TrainerPanel = () => {
     setModalOpen(true);
   };
 
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedItem(null);
+  };
+
   const allItems = [
     ...exercises.map(ex => ({ 
       ...ex, 
       type: 'exercise', 
       icon: <FaDumbbell />,
-      created: new Date(ex.createdAt).getTime()
+      created: new Date(ex.createdAt || Date.now()).getTime()
     })),
     ...workouts.map(w => ({ 
       ...w, 
       type: 'workout', 
       icon: <FaCalendarAlt />,
-      created: new Date(w.createdAt).getTime()
+      created: new Date(w.createdAt || Date.now()).getTime()
     }))
-  ].sort((a, b) => b.created - a.created);
+  ].sort((a, b) => (b.created || 0) - (a.created || 0));
 
   return (
     <div className={`container ${styles.container}`}>
       <div className={styles.header}>
         <h1 className={styles.title}>Мои материалы</h1>
         <div className={styles.buttons}>
-          <button 
-            onClick={() => openExerciseModal()} 
-            className={styles.addButton}
-          >
+          <button onClick={() => openExerciseModal()} className={styles.addButton}>
             <FaPlus size={14} />
             Упражнение
           </button>
-          <button 
-            onClick={() => openWorkoutModal()} 
-            className={styles.addButton}
-          >
+          <button onClick={() => openWorkoutModal()} className={styles.addButton}>
             <FaPlus size={14} />
             Тренировка
           </button>
@@ -126,17 +143,11 @@ const TrainerPanel = () => {
         <div className={styles.emptyState}>
           <p>У вас пока нет созданных материалов</p>
           <div className={styles.emptyButtons}>
-            <button 
-              onClick={() => openExerciseModal()} 
-              className={styles.emptyButton}
-            >
-              <FaPlus size={12} /> Создать упражнение
+            <button onClick={() => openExerciseModal()} className={styles.emptyButton}>
+              Создать упражнение
             </button>
-            <button 
-              onClick={() => openWorkoutModal()} 
-              className={styles.emptyButton}
-            >
-              <FaPlus size={12} /> Создать тренировку
+            <button onClick={() => openWorkoutModal()} className={styles.emptyButton}>
+              Создать тренировку
             </button>
           </div>
         </div>
@@ -145,11 +156,14 @@ const TrainerPanel = () => {
           {allItems.map(item => (
             <div key={`${item.type}-${item.id}`} className={styles.card}>
               <div className={styles.cardHeader}>
+                <div className={styles.cardTitleContainer}>
+                  <span className={styles.cardIcon}>{item.icon}</span>
                   <div>
-                    <h3 className={styles.cardTitle}>{item.name}</h3>
+                    <h3 className={styles.cardTitle}>{item.name || 'Без названия'}</h3>
                     <span className={styles.cardType}>
                       {item.type === 'exercise' ? 'Упражнение' : 'Тренировка'}
                     </span>
+                  </div>
                 </div>
                 <div className={styles.cardActions}>
                   <button 
@@ -201,7 +215,7 @@ const TrainerPanel = () => {
                     </>
                   ) : (
                     <>
-                      <span className={styles.tag}>{item.duration} мин</span>
+                      <span className={styles.tag}>{item.duration || 0} мин</span>
                       <span className={styles.tag}>
                         {item.level === 'beginner' ? 'Новичок' : 
                          item.level === 'intermediate' ? 'Средний' : 'Продвинутый'}
@@ -219,19 +233,17 @@ const TrainerPanel = () => {
         </div>
       )}
 
-      {modalType === 'exercise' && (
+      {modalType === 'exercise' ? (
         <ExerciseModal
           isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
+          onClose={closeModal}
           exercise={selectedItem}
           onSave={handleItemSaved}
         />
-      )}
-
-      {modalType === 'workout' && (
+      ) : (
         <WorkoutModal
           isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
+          onClose={closeModal}
           workout={selectedItem}
           onSave={handleItemSaved}
         />
