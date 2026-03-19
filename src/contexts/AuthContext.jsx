@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'))
 
   useEffect(() => {
-    axios.defaults.baseURL = process.env.REACT_APP_API_URL
+    axios.defaults.baseURL = import.meta.env.VITE_API_URL || 'https://s-production-2907.up.railway.app';
   }, [])
 
   useEffect(() => {
