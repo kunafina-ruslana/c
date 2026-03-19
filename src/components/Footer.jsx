@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import styles from './Footer.module.css'
+import logoSvg from '../../public/icons/logotype.svg';
 
 const Footer = () => {
   return (
@@ -7,7 +8,7 @@ const Footer = () => {
       <div className='container'>
         <div className={styles.container_footer}>
           <Link to="/" className={styles.logo}>
-            <img src="/public/icons/logotype.svg" alt="logotype" />
+          <img src={logoSvg} alt="logotype" />
           </Link>
 
           <nav className={styles.nav}>
