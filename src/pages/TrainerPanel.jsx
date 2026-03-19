@@ -157,9 +157,9 @@ const TrainerPanel = () => {
             <div key={`${item.type}-${item.id}`} className={styles.card}>
               <div className={styles.cardHeader}>
                 <div className={styles.cardTitleContainer}>
-                  <span className={styles.cardIcon}>{item.icon}</span>
+                  <div className={styles.list_icons}><span className={styles.cardIcon}>{item.icon}</span>
+                    <h3 className={styles.cardTitle}>{item.name || 'Без названия'}</h3></div>
                   <div>
-                    <h3 className={styles.cardTitle}>{item.name || 'Без названия'}</h3>
                     <span className={styles.cardType}>
                       {item.type === 'exercise' ? 'Упражнение' : 'Тренировка'}
                     </span>

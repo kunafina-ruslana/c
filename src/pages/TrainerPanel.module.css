@@ -121,14 +121,8 @@
   border-radius: 12px;
   padding: 16px;
   border: 1px solid var(--border);
-  transition: all 0.3s;
 }
 
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(var(--accent-rgb), 0.1);
-  border-color: rgba(var(--accent-rgb), 0.3);
-}
 
 .cardHeader {
   display: flex;
@@ -227,6 +221,11 @@
   opacity: 0.9;
   border: 1px solid var(--border);
   transition: all 0.3s;
+}
+.list_icons{
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .tag:hover {

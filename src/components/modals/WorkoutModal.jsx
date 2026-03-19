@@ -246,10 +246,10 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
 
   const getCategoryLabel = (category) => {
     switch(category) {
-      case 'strength': return '💪 Силовое';
-      case 'cardio': return '❤️ Кардио';
-      case 'stretching': return '🧘 Растяжка';
-      case 'other': return '📌 Другое';
+      case 'strength': return 'Силовое';
+      case 'cardio': return 'Кардио';
+      case 'stretching': return 'Растяжка';
+      case 'other': return 'Другое';
       default: return category;
     }
   };
@@ -270,7 +270,6 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formContent}>
-            {/* Основная информация о тренировке */}
             <div className={styles.section}>
               <h3 className={styles.sectionTitle}>Основная информация</h3>
               
@@ -376,33 +375,8 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
                   />
                 </div>
                 
-                <div className={styles.filterRow}>
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className={styles.filterSelect}
-                  >
-                    <option value="all">Все категории</option>
-                    <option value="strength">Силовые</option>
-                    <option value="cardio">Кардио</option>
-                    <option value="stretching">Растяжка</option>
-                    <option value="other">Другое</option>
-                  </select>
-
-                  <select
-                    value={selectedDifficulty}
-                    onChange={(e) => setSelectedDifficulty(e.target.value)}
-                    className={styles.filterSelect}
-                  >
-                    <option value="all">Все уровни</option>
-                    <option value="beginner">Новичок</option>
-                    <option value="intermediate">Средний</option>
-                    <option value="advanced">Продвинутый</option>
-                  </select>
-                </div>
               </div>
 
-              {/* Список доступных упражнений */}
               <div className={styles.exercisesList}>
                 {filteredExercises.length === 0 ? (
                   <div className={styles.noExercises}>
@@ -416,16 +390,9 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
                       onClick={() => setSelectedExercise(ex)}
                     >
                       <div className={styles.exerciseCardHeader}>
-                        <FaDumbbell className={styles.exerciseCardIcon} />
                         <span className={styles.exerciseCardName}>{ex.name}</span>
                       </div>
-                      <div className={styles.exerciseCardTags}>
-                        <span className={styles.exerciseTag}>{getCategoryLabel(ex.category)}</span>
-                        <span className={styles.exerciseTag}>{getDifficultyLabel(ex.difficulty)}</span>
-                        {ex.muscleGroup && (
-                          <span className={styles.exerciseTag}>🎯 {ex.muscleGroup}</span>
-                        )}
-                      </div>
+                      
                     </div>
                   ))
                 )}
@@ -484,7 +451,7 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
                   {formData.exercises.map((ex, index) => (
                     <div key={index} className={styles.selectedExercise}>
                       <div className={styles.selectedExerciseHeader}>
-                        <FaDumbbell className={styles.selectedExerciseIcon} />
+                       
                         <span className={styles.selectedExerciseName}>{ex.name}</span>
                         <button
                           type="button"
@@ -538,8 +505,7 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave }) => {
               Отмена
             </button>
             <button type="submit" className={styles.saveButton} disabled={loading}>
-              <FaSave size={16} />
-              {loading ? 'Сохранение...' : (workout ? 'Сохранить' : 'Создать')}
+                           {loading ? 'Сохранение...' : (workout ? 'Сохранить' : 'Создать')}
             </button>
           </div>
         </form>

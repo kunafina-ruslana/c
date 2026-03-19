@@ -229,9 +229,12 @@ const Home = () => {
                     <p className={styles.comment}>
                       "{review.comment}"
                     </p>
-                    <p className={styles.author}>
-                      — {review.fullName}
+                    <div className={styles.comment_data}>
+                      <p>{new Date(review.createdAt).toLocaleDateString('ru-RU')}</p> <p className={styles.author}>
+                      {review.fullName}
                     </p>
+                    </div>
+                    
                   </div>
                 ))}
               </div>

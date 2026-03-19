@@ -10,18 +10,37 @@
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal {
   background-color: var(--bg);
   border-radius: 12px;
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   max-height: 90vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .header {
@@ -30,14 +49,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--bg-second);
+  background-color: var(--bg-secondary);
 }
 
 .title {
   font-size: 22px;
   font-weight: bold;
   margin: 0;
-  color: var(--text);
+  color: var(--accent-color);
 }
 
 .closeButton {
@@ -50,11 +69,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
 }
 
 .closeButton:hover {
   background-color: var(--bg);
+  transform: rotate(90deg);
 }
 
 .form {
@@ -72,8 +92,18 @@
 
 .section {
   margin-bottom: 30px;
+  background-color: var(--bg-secondary);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
 }
 
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  color: var(--accent-color);
+}
 .sectionHeader {
   display: flex;
   align-items: center;
@@ -87,14 +117,17 @@
   color: var(--text);
   opacity: 0.7;
   margin-left: 5px;
+  padding: 2px 8px;
+  background-color: var(--bg);
+  border-radius: 12px;
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  flex: 1;
   margin-bottom: 15px;
+  flex: 1;
 }
 
 .labelContainer {
@@ -133,7 +166,8 @@
   background-color: var(--bg);
   color: var(--text);
   font-size: 14px;
-  transition: border-color 0.3s;
+  transition: all 0.3s;
+  width: 100%;
 }
 
 .input:focus,
@@ -141,6 +175,7 @@
 .select:focus {
   outline: none;
   border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
 }
 
 .textarea {
@@ -151,7 +186,6 @@
 
 .select {
   cursor: pointer;
-  width: 100%;
 }
 
 .categoryContainer {
@@ -161,11 +195,11 @@
 }
 
 .inputError {
-  border-color: var(--error-color);
+  border-color: var(--error-color) !important;
 }
 
 .inputError:focus {
-  border-color: var(--error-color);
+  border-color: var(--error-color) !important;
   box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
 }
 
@@ -184,6 +218,9 @@
 .errorText {
   color: var(--error-color);
   font-size: 13px;
+  padding: 5px 10px;
+  background-color: rgba(220, 53, 69, 0.1);
+  border-radius: 4px;
 }
 
 .hint {
@@ -195,190 +232,321 @@
 
 .imagePreview {
   margin-top: 10px;
-  padding: 10px;
-  background-color: var(--bg-second);
+  padding: 15px;
+  background-color: var(--bg);
   border-radius: 6px;
   text-align: center;
+  border: 1px dashed var(--border);
 }
 
 .previewImage {
   max-width: 100%;
   max-height: 150px;
   object-fit: contain;
-}
-
-.exerciseSelector {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
-  padding: 20px;
-  background-color: var(--bg-second);
-  border-radius: 8px;
-}
-
-.infoBox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px;
-  background-color: rgba(var(--accent-rgb), 0.1);
-  border-radius: 6px;
-  color: var(--accent-color);
-}
-
-.infoText {
-  font-size: 13px;
-}
-
-.exerciseSelect {
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background-color: var(--bg);
-  color: var(--text);
-  font-size: 14px;
-  width: 100%;
-}
-
-.exerciseParams {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  gap: 10px;
-}
-
-.paramGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.paramLabel {
-  font-size: 11px;
-  color: var(--text);
-  opacity: 0.7;
-}
-
-.paramInput {
-  padding: 8px;
   border-radius: 4px;
-  border: 1px solid var(--border);
-  background-color: var(--bg);
-  color: var(--text);
-  font-size: 13px;
-  width: 100%;
+  transition: transform 0.3s;
 }
 
-.addButton {
-  padding: 8px 16px;
-  background-color: var(--accent-color);
-  border: none;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-size: 13px;
-  font-weight: 500;
-  transition: background-color 0.3s;
+.previewImage:hover {
+  transform: scale(1.05);
 }
 
-.addButton:hover {
-  background-color: var(--accent-hover);
+/* Фильтры для выбора упражнений */
+.filters {
+  margin-bottom: 15px;
 }
 
-.addButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.exercisesList {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  max-height: 400px;
-  overflow-y: auto;
-}
-
-.exerciseItem {
-  padding: 15px;
-  background-color: var(--bg-second);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-}
-
-.exerciseHeader {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.searchBox {
+  position: relative;
   margin-bottom: 10px;
 }
 
-.exerciseIcon {
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 10px 10px 35px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
+}
+
+.filterRow {
+  display: flex;
+  gap: 10px;
+}
+
+.filterSelect {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Список упражнений */
+.exercisesList {
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg);
+  margin-bottom: 15px;
+}
+
+.noExercises {
+  padding: 40px;
+  text-align: center;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.exerciseCard {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.exerciseCard:last-child {
+  border-bottom: none;
+}
+
+.exerciseCard.selected {
+  background-color: rgba(var(--accent-rgb), 0.1);
+  border-left: 3px solid var(--accent-color);
+}
+
+.exerciseCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.exerciseCardName {
+  font-weight: 500;
+  color: var(--text);
+}
+
+
+.exerciseConfig {
+  margin-top: 15px;
+  padding: 20px;
+  background-color: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.configTitle {
+  font-size: 15px;
+  margin: 0 0 15px 0;
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.configRow {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.configGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.configGroup label {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.7;
+  font-weight: 500;
+}
+
+.configInput {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 13px;
+  transition: all 0.3s;
+}
+
+.configInput:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.1);
+}
+
+.addExerciseButton {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.addExerciseButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+}
+
+.addExerciseButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Выбранные упражнения */
+.selectedExercises {
+  margin-top: 20px;
+}
+
+.selectedTitle {
+  font-size: 16px;
+  margin: 0 0 15px 0;
+  color: var(--accent-color);
+  font-weight: 600;
+}
+
+.selectedExercise {
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 12px;
+  transition: all 0.3s;
+}
+
+.selectedExercise:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent-color);
+}
+
+.selectedExerciseHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.selectedExerciseIcon {
   color: var(--accent-color);
 }
 
-.exerciseName {
+.selectedExerciseName {
   flex: 1;
-  font-size: 15px;
   font-weight: 500;
   color: var(--text);
 }
 
 .removeButton {
-  padding: 4px 8px;
-  background-color: transparent;
-  border: none;
+  padding: 5px 10px;
+  background: none;
+  border: 1px solid var(--error-color);
   color: var(--error-color);
   cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
 }
 
 .removeButton:hover {
-  background-color: rgba(220, 53, 69, 0.1);
+  background-color: var(--error-color);
+  color: white;
+  transform: scale(1.05);
 }
 
-.exerciseDetails {
+.selectedExerciseDetails {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 15px;
+  margin-left: 28px;
 }
 
 .detailItem {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 5px;
 }
 
 .detailItem label {
   font-size: 11px;
   color: var(--text);
   opacity: 0.7;
+  font-weight: 500;
 }
 
 .detailInput {
-  padding: 6px;
-  border-radius: 4px;
+  padding: 8px;
   border: 1px solid var(--border);
+  border-radius: 4px;
   background-color: var(--bg);
   color: var(--text);
   font-size: 12px;
   width: 100%;
+  transition: all 0.3s;
 }
 
+.detailInput:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Пустое состояние */
 .emptyExercises {
-  padding: 30px;
+  padding: 40px;
   text-align: center;
+  background-color: var(--bg-secondary);
   border-radius: 8px;
+  border: 1px dashed var(--border);
 }
 
 .emptyText {
   font-size: 16px;
   color: var(--text);
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .emptySubtext {
@@ -387,19 +555,21 @@
   opacity: 0.6;
 }
 
+/* Футер */
 .footer {
   padding: 20px 25px;
   border-top: 1px solid var(--border);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--bg-second);
+  justify-content: flex-end;
+  gap: 15px;
+  background-color: var(--bg-secondary);
 }
 
 .footerInfo {
   display: flex;
   align-items: center;
   gap: 5px;
+  margin-right: auto;
 }
 
 .footerHint {
@@ -414,23 +584,24 @@
 }
 
 .cancelButton {
-  padding: 10px 20px;
+  padding: 10px 24px;
   background-color: transparent;
   border: 1px solid var(--border);
   border-radius: 6px;
   color: var(--text);
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
 }
 
 .cancelButton:hover {
   background-color: var(--bg);
+  transform: translateY(-2px);
 }
 
 .saveButton {
-  padding: 10px 24px;
-  background-color: var(--accent-color);
+  padding: 10px 28px;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
   border: none;
   border-radius: 6px;
   color: white;
@@ -440,19 +611,27 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
 }
 
 .saveButton:hover {
-  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
 }
 
 .saveButton:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
+/* Медиа-запросы для мобильных устройств */
 @media (max-width: 768px) {
+  .overlay {
+    padding: 0;
+  }
+
   .modal {
     max-width: 100%;
     max-height: 100vh;
@@ -471,18 +650,47 @@
     padding: 15px;
   }
 
+  .section {
+    padding: 15px;
+  }
+
   .row {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .filterRow {
+    flex-direction: column;
   }
 
   .exerciseParams {
     grid-template-columns: 1fr;
   }
 
+  .configRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .addExerciseButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .selectedExerciseDetails {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+
   .footer {
     padding: 15px 20px;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .footerInfo {
+    margin-right: 0;
+    justify-content: center;
   }
 
   .footerButtons {
@@ -492,5 +700,6 @@
   .cancelButton,
   .saveButton {
     flex: 1;
+    justify-content: center;
   }
 }

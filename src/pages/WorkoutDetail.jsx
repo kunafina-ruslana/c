@@ -257,7 +257,7 @@ const WorkoutDetail = () => {
           <FaArrowLeft /> К списку
         </button>
         <button onClick={toggleFavorite} className={styles.favoriteButton}>
-          {isFavorite ? <FaHeart color="#ff4444" size={24} /> : <FaRegHeart size={24} />}
+          {isFavorite ? <FaHeart color="#9C271C" size={24} /> : <FaRegHeart size={24} />}
         </button>
       </div>
 

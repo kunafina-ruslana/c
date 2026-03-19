@@ -172,20 +172,21 @@
   max-width: 300px;
   height: 200px;
   padding: 25px;
-  color: var(--text-primary);
+  color: var(--text);
   font-size: 16px;
-  background: var(--bg-primary);
+  background: var(--bg);
   border-radius: 16px;
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+.comment_data{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: space-between;
 }
 
 .comment {

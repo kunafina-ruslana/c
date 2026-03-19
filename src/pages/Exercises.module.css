@@ -41,7 +41,6 @@
 }
 
 .exerciseCard {
-  background: linear-gradient(135deg, var(--bg-second), var(--bg));
   border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
@@ -61,7 +60,6 @@
   position: relative;
   height: 250px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--bg), var(--bg-second));
 }
 
 .exerciseImage {
@@ -175,11 +173,6 @@
   margin-bottom: 20px;
   padding: 15px;
   border-radius: 12px;
-  transition: background-color 0.3s;
-}
-
-.modalSection:hover {
-  background-color: var(--bg-second);
 }
 
 .sectionHeader {
@@ -239,7 +232,6 @@
 .noVideo {
   padding: 40px;
   text-align: center;
-  background: linear-gradient(135deg, var(--bg-second), var(--bg));
   border-radius: 12px;
   margin-bottom: 20px;
   color: var(--text);

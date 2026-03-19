@@ -363,7 +363,7 @@ const UserModal = ({ isOpen, onClose, user, onSave, isCreating = false }) => {
             <button type="button" onClick={onClose} className={styles.cancelButton} disabled={loading}>
               Отмена
             </button>
-            <button type="submit" className={styles.saveButton} disabled={loading}>
+            <button type="submit" className={styles.approveButton} disabled={loading}>
               <FaCheck size={14} /> {loading ? 'Сохранение...' : (isCreating ? 'Создать' : 'Сохранить')}
             </button>
           </div>
@@ -712,7 +712,7 @@ const ExerciseModal = ({ isOpen, onClose, exercise, onSave, isCreating = false }
             <button type="button" onClick={onClose} className={styles.cancelButton} disabled={loading}>
               Отмена
             </button>
-            <button type="submit" className={styles.saveButton} disabled={loading}>
+            <button type="submit" className={styles.approveButton} disabled={loading}>
               <FaCheck size={14} /> {loading ? 'Сохранение...' : (isCreating ? 'Создать' : 'Сохранить')}
             </button>
           </div>
@@ -940,7 +940,7 @@ const WorkoutModal = ({ isOpen, onClose, workout, onSave, isCreating = false }) 
             <button type="button" onClick={onClose} className={styles.cancelButton} disabled={loading}>
               Отмена
             </button>
-            <button type="submit" className={styles.saveButton} disabled={loading}>
+            <button type="submit" className={styles.approveButton} disabled={loading}>
               <FaCheck size={14} /> {loading ? 'Сохранение...' : (isCreating ? 'Создать' : 'Сохранить')}
             </button>
           </div>
@@ -1071,7 +1071,6 @@ const ReviewModal = ({ isOpen, onClose, review, onSave }) => {
   )
 }
 
-// Основной компонент AdminPanel
 const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('users')
   const [users, setUsers] = useState([])

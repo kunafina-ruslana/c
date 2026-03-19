@@ -171,7 +171,7 @@ const Workouts = () => {
                   className={`${styles.favoriteButton} ${favorites.includes(workout.id) ? styles.favoriteButtonActive : ''}`}
                 >
                   {favorites.includes(workout.id) ? (
-                    <FaHeart color="#ff4444" size={24} />
+                    <FaHeart color="#9C271C" size={24} />
                   ) : (
                     <FaRegHeart size={24} />
                   )}
