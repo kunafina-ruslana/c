@@ -4,6 +4,7 @@ import { useTheme } from '../contexts/ThemeContext'
 import { useAuth } from '../contexts/AuthContext'
 import { FaUser, FaSun, FaMoon, FaBars, FaTimes, FaSignOutAlt } from 'react-icons/fa'
 import styles from './Header.module.css'
+import logoSvg from '../../public/icons/logotype.svg';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme()
@@ -42,7 +43,7 @@ const Header = () => {
     <header className={styles.header}>
       <div className={` ${styles.container}`}>
         <Link to="/" className={styles.logo} onClick={closeMenu}>
-          <img src="../../public/icons/logotype.svg" alt="logotype" />
+          <img src={logoSvg} alt="logotype" />
         </Link>
 
         {isMobile ? (
