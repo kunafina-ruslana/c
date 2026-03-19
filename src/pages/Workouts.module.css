@@ -1,0 +1,271 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 36px;
+  margin-bottom: 30px;
+}
+
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  border-radius: 15px;
+}
+
+.searchInput {
+  flex: 1;
+  min-width: 250px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.searchInput::placeholder {
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.filterSelect {
+  width: 160px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  font-size: 18px;
+  color: var(--text);
+  opacity: 0.7;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.emptyText {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.emptySubtext {
+  font-size: 18px;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.workoutsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
+}
+
+.workoutCard {
+  border-radius: 15px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.workoutCardHover {
+  transform: scale(1.02);
+}
+
+.cardHeader {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.workoutImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.workoutCard:hover .workoutImage {
+  transform: scale(1.1);
+}
+
+.imagePlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg), var(--bg-secondary));
+  color: var(--accent-color);
+  opacity: 0.5;
+}
+
+.favoriteButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: all 0.3s;
+  z-index: 3;
+  backdrop-filter: blur(4px);
+}
+
+.favoriteButton:hover {
+  transform: scale(1.1);
+  background: white;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.favoriteButtonActive {
+  animation: heartBeat 0.3s ease;
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+.levelBadge {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 6px 16px;
+  border-radius: 15px;
+  border: 1px solid white;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 3;
+  backdrop-filter: blur(4px);
+}
+
+
+.cardContent {
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.workoutName {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: var(--text);
+  transition: color 0.3s;
+}
+
+.workoutDescription {
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.8;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.workoutMeta {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.8;
+  padding: 6px 12px;
+  border-radius: 15px;
+  transition: all 0.3s;
+  border: 1px solid transparent;
+}
+
+.workoutCard:hover .metaItem {
+  border-color: rgba(var(--accent-rgb), 0.2);
+}
+
+.metaItem svg {
+  color: var(--accent-color);
+}
+
+.startButton {
+  width: 100%;
+  padding: 14px;
+  background: var(--accent-color);
+  border-radius: 15px;
+  color: white;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 28px;
+  }
+
+  .filters {
+    padding: 15px;
+  }
+
+  .filterSelect {
+    width: 100%;
+  }
+
+  .workoutsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cardHeader {
+    height: 180px;
+  }
+
+  .workoutCardHover {
+    transform: translateY(-4px) scale(1.01);
+  }
+}

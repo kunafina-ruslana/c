@@ -1,0 +1,287 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.title {
+  font-size: 24px;
+  margin: 0;
+  color: var(--text);
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.addButton {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+  color: white;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.addButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: var(--text);
+  opacity: 0.7;
+  position: relative;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-top: 20px;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg));
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+}
+
+.emptyState p {
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.emptyButtons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.emptyButton {
+  padding: 10px 20px;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s;
+}
+
+.emptyButton:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--accent-rgb), 0.3);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: linear-gradient(135deg, var(--bg-secondary), var(--bg));
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(var(--accent-rgb), 0.1);
+  border-color: rgba(var(--accent-rgb), 0.3);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.cardIcon {
+  font-size: 20px;
+  color: var(--accent-color);
+}
+
+.cardTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 3px 0;
+  color: var(--text);
+}
+
+.cardType {
+  font-size: 18px;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+}
+
+.editButton {
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editButton:hover {
+  background-color: var(--accent-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.deleteButton {
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteButton:hover {
+  background-color: var(--error-color);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.cardBody {
+  font-size: 14px;
+}
+
+.description {
+  margin-bottom: 12px;
+  color: var(--text);
+  opacity: 0.8;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  padding: 4px 10px;
+  background-color: var(--bg);
+  border-radius: 20px;
+  font-size: 14px;
+  color: var(--text);
+  opacity: 0.9;
+  border: 1px solid var(--border);
+  transition: all 0.3s;
+}
+
+.tag:hover {
+  border-color: var(--accent-color);
+  background-color: rgba(var(--accent-rgb), 0.1);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .title {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .buttons {
+    justify-content: center;
+  }
+
+  .addButton {
+    flex: 1;
+  }
+
+  .emptyButtons {
+    flex-direction: column;
+  }
+
+  .emptyButton {
+    width: 100%;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cardActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .editButton,
+  .deleteButton {
+    flex: 1;
+  }
+}

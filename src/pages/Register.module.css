@@ -1,0 +1,165 @@
+.container {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/public/images/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+
+.form_container {
+  max-width: 500px;
+  width: 100%;
+  padding: 30px;
+  background-color: var(--bg);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 28px;
+  margin-bottom: 30px;
+  text-align: center;
+  color: var(--text);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form_group {
+  margin-bottom: 5px;
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background-color: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.input::placeholder {
+  color: var(--text);
+  opacity: 0.5;
+}
+
+.input_error {
+  border-color: var(--error-color) !important;
+}
+
+.hint {
+  display: block;
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.7;
+  margin-top: 5px;
+}
+
+.checkbox_label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.checkbox {
+  width: auto;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.link {
+  margin-top: 20px;
+  text-align: center;
+  color: var(--text);
+}
+
+.link a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.link a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.input[type="date"] {
+  color-scheme: var(--color-scheme);
+}
+
+.input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: var(--date-icon-filter);
+  cursor: pointer;
+}
+
+.server_error {
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  padding: 12px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.field_error {
+  color: var(--error-color);
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+.input_error {
+  border-color: var(--error-color) !important;
+}
+
+.input_error:focus {
+  border-color: var(--error-color) !important;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+@media (max-width: 768px) {
+  .form_container {
+    padding: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+  }
+  
+  .input,
+  .select {
+    padding: 10px;
+    font-size: 14px;
+  }
+}

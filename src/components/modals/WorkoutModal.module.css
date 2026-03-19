@@ -1,0 +1,496 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal {
+  background-color: var(--bg);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.header {
+  padding: 20px 25px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-second);
+}
+
+.title {
+  font-size: 22px;
+  font-weight: bold;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.closeButton:hover {
+  background-color: var(--bg);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.formContent {
+  padding: 25px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.section {
+  margin-bottom: 30px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.exerciseCount {
+  font-size: 14px;
+  font-weight: normal;
+  color: var(--text-primary);
+  opacity: 0.7;
+  margin-left: 5px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  margin-bottom: 15px;
+}
+
+.labelContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.charCount {
+  font-size: 12px;
+  transition: color 0.3s;
+}
+
+.charCountSmall {
+  font-size: 11px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.input,
+.textarea,
+.select {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+.select {
+  cursor: pointer;
+  width: 100%;
+}
+
+.categoryContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputError {
+  border-color: var(--error-color);
+}
+
+.inputError:focus {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.error {
+  color: var(--error-color);
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.errorText {
+  color: var(--error-color);
+  font-size: 13px;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--text-primary);
+  opacity: 0.7;
+  margin-top: 3px;
+}
+
+.imagePreview {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: var(--bg-second);
+  border-radius: 6px;
+  text-align: center;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 150px;
+  object-fit: contain;
+}
+
+.exerciseSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: var(--bg-second);
+  border-radius: 8px;
+}
+
+.infoBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  background-color: rgba(var(--accent-rgb), 0.1);
+  border-radius: 6px;
+  color: var(--accent-color);
+}
+
+.infoText {
+  font-size: 13px;
+}
+
+.exerciseSelect {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  width: 100%;
+}
+
+.exerciseParams {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 10px;
+}
+
+.paramGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.paramLabel {
+  font-size: 11px;
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.paramInput {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-size: 13px;
+  width: 100%;
+}
+
+.addButton {
+  padding: 8px 16px;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.addButton:hover {
+  background-color: var(--accent-hover);
+}
+
+.addButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.exercisesList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.exerciseItem {
+  padding: 15px;
+  background-color: var(--bg-second);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.exerciseHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.exerciseIcon {
+  color: var(--accent-color);
+}
+
+.exerciseName {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.removeButton {
+  padding: 4px 8px;
+  background-color: transparent;
+  border: none;
+  color: var(--error-color);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.removeButton:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.exerciseDetails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.detailItem label {
+  font-size: 11px;
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.detailInput {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background-color: var(--bg);
+  color: var(--text-primary);
+  font-size: 12px;
+  width: 100%;
+}
+
+.emptyExercises {
+  padding: 30px;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.emptyText {
+  font-size: 16px;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+
+.emptySubtext {
+  font-size: 13px;
+  color: var(--text-primary);
+  opacity: 0.6;
+}
+
+.footer {
+  padding: 20px 25px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--bg-second);
+}
+
+.footerInfo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.footerHint {
+  font-size: 12px;
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.footerButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.cancelButton {
+  padding: 10px 20px;
+  background-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.cancelButton:hover {
+  background-color: var(--bg);
+}
+
+.saveButton {
+  padding: 10px 24px;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.saveButton:hover {
+  background-color: var(--accent-hover);
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .modal {
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+
+  .header {
+    padding: 15px 20px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .formContent {
+    padding: 15px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .exerciseParams {
+    grid-template-columns: 1fr;
+  }
+
+  .footer {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footerButtons {
+    width: 100%;
+  }
+
+  .cancelButton,
+  .saveButton {
+    flex: 1;
+  }
+}

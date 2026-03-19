@@ -1,0 +1,185 @@
+.header {
+  border-bottom: 1px solid var(--border);
+  background-color: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 25px 20px;
+}
+
+
+.nav {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.link {
+  color: var(--text);
+  transition: color 0.3s;
+}
+
+.link:hover {
+  color: var(--accent-color);
+}
+
+.userMenu {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.iconButton:hover {
+  background-color: var(--bg);
+}
+
+.themeButton {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.themeButton:hover {
+  background-color: var(--bg);
+}
+
+.logoutButton {
+  padding: 8px 12px;
+  background-color: transparent;
+  border: 1px solid var(--accent-color);
+  color: var(--accent-color);
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.3s;
+}
+
+.logoutButton:hover {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.burgerButton {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg);
+  z-index: 1000;
+  padding: 80px 20px 20px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.mobileNav {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mobileLink {
+  color: var(--text);
+  font-size: 20px;
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.3s;
+}
+
+.mobileLink:hover {
+  color: var(--accent-color);
+}
+
+.mobileLogoutButton {
+  background: none;
+  border: none;
+  color: var(--error-color);
+  font-size: 20px;
+  padding: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color 0.3s;
+}
+
+.mobileLogoutButton:hover {
+  color: var(--accent-color);
+}
+
+.mobileThemeButton {
+  background: none;
+  border: none;
+      border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: 20px;
+  padding: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color 0.3s;
+}
+
+.mobileThemeButton:hover {
+  color: var(--accent-color);
+}
+
+
+@media (max-width: 768px) {
+  .logo img{
+    width: 200px;
+  }
+}

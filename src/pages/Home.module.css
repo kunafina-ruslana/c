@@ -1,0 +1,497 @@
+.hero {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/public/images/bg.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.heroContent {
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.heroTitle {
+  font-size: 48px;
+  margin-bottom: 35px;
+}
+
+.heroText {
+  font-size: 20px;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.heroBtn {
+  padding: 15px 50px;
+  font-size: 18px;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.heroBtn:hover {
+  background-color: var(--accent-hover);
+}
+
+.sectionTitle {
+  font-size: 36px;
+  margin-bottom: 50px;
+  text-align: center;
+}
+
+.advantages {
+  padding: 50px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.advantagesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.advantageCard {
+  padding: 40px 30px;
+  background-color: var(--bg);
+  border-radius: 20px;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-rgb), 0.1);
+}
+
+.advantageCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--accent-color), 
+    transparent
+  );
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.advantageCard:hover::before {
+  transform: translateX(100%);
+}
+
+.advantageCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.advantageCard:hover::after {
+  opacity: 1;
+}
+
+.advantageCard:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(var(--accent-rgb), 0.15);
+  border-color: rgba(var(--accent-rgb), 0.3);
+}
+
+.advantageTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  background: linear-gradient(135deg, var(--text), var(--accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  display: inline-block;
+}
+
+.advantageDescription {
+  font-size: 14px;
+  line-height: 1.6;
+  opacity: 0.8;
+  position: relative;
+  z-index: 1;
+}
+
+.reviews {
+  padding: 50px 0;
+  overflow: hidden;
+}
+
+.title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 40px;
+  color: var(--text-primary);
+}
+
+.carouselContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.5s ease;
+}
+
+.card {
+  min-width: 300px;
+  max-width: 300px;
+  height: 200px;
+  padding: 25px;
+  color: var(--text-primary);
+  font-size: 16px;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.comment {
+  font-style: italic;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.author {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: right;
+  color: var(--accent-color);
+}
+
+.arrowLeft,
+.arrowRight {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent-color);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 2;
+}
+
+.arrowLeft:hover,
+.arrowRight:hover {
+  background: var(--accent-hover);
+  transform: scale(1.1);
+}
+
+.arrowLeft {
+  left: -20px;
+}
+
+.arrowRight {
+  right: -20px;
+}
+
+.dots {
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--border);
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+}
+
+.dot:hover {
+  background-color: var(--accent-color);
+  transform: scale(1.2);
+}
+
+.dotActive {
+  background-color: var(--accent-color);
+  transform: scale(1.3);
+}
+
+.feedback {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/public/images/feedback_bg.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  color: white;
+  padding: 60px 0;
+}
+
+.feedbackContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.feedbackInfo {
+  padding-right: 40px;
+}
+
+.feedbackTitle {
+  font-size: 36px;
+  margin-bottom: 25px;
+}
+
+.feedbackText {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.feedbackContacts {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.feedbackPhone,
+.feedbackEmail {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feedbackForm {
+  width: 100%;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.feedbackFormTitle {
+  font-size: 28px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.formInput,
+.formTextarea {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.formInput:focus,
+.formTextarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.formInput::placeholder,
+.formTextarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.formInputError {
+  border-color: var(--error-color) !important;
+}
+
+.formError {
+  color: var(--error-color);
+  font-size: 13px;
+  margin-top: 5px;
+  display: block;
+}
+
+.feedbackBtn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+  background-color: var(--accent-color);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.feedbackBtn:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1024px) {
+  .arrowLeft {
+    left: 0;
+  }
+  
+  .arrowRight {
+    right: 0;
+  }
+  
+  .carouselContainer {
+    padding: 0 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 32px;
+  }
+
+  .heroText {
+    font-size: 16px;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+
+  .advantages {
+    padding: 50px 0;
+  }
+
+  .advantagesGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .advantageCard {
+    padding: 30px 20px;
+  }
+
+  .reviews {
+    padding: 50px 0;
+  }
+
+  .title {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+
+  .card {
+    min-width: 260px;
+    max-width: 260px;
+    height: 180px;
+    padding: 20px;
+  }
+
+  .arrowLeft,
+  .arrowRight {
+    display: none;
+  }
+
+  .carouselContainer {
+    padding: 0 20px;
+  }
+
+  .dots {
+    bottom: -25px;
+  }
+
+  .feedback {
+    min-height: auto;
+    padding: 50px 0;
+  }
+
+  .feedbackContainer {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .feedbackInfo {
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .feedbackTitle {
+    font-size: 28px;
+  }
+
+  .feedbackTitle::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .feedbackText {
+    font-size: 16px;
+  }
+
+  .feedbackPhone,
+  .feedbackEmail {
+    font-size: 16px;
+    justify-content: center;
+  }
+
+  .feedbackForm {
+    padding: 30px 20px;
+  }
+
+  .feedbackFormTitle {
+    font-size: 24px;
+  }
+}
