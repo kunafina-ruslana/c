@@ -63,10 +63,14 @@ const Home = () => {
 
   const fetchReviews = async () => {
     try {
-      const response = await axios.get('/api/reviews?limit=20')
-      setReviews(response.data.slice(0, 20))
+      const response = await axios.get('/api/reviews')
+      console.log('Reviews response:', response.data)
+      
+            const reviewsData = Array.isArray(response.data) ? response.data : []
+      setReviews(reviewsData)
     } catch (error) {
       console.error('Error fetching reviews:', error)
+      setReviews([]) 
     }
   }
   const nextSlide = () => {
